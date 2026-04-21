@@ -1,0 +1,127 @@
+---
+title: "Introduction to BrainNetTest"
+author: "Maximiliano Martino, Daniel Fraiman"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to BrainNetTest}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup_intro, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+```
+
+## Overview
+
+`BrainNetTest` implements the non-parametric L1-distance ANOVA test of Fraiman
+and Fraiman (2018) for comparing populations of brain networks represented as
+graphs. The package provides:
+
+* utilities to build a central (mean) graph for a population and measure
+  Manhattan (L1) distances between adjacency matrices;
+* the group test statistic `T` and its permutation null distribution;
+* a fast procedure (`identify_critical_links`) that pinpoints the edges
+  driving between-group differences; and
+* helpers to simulate synthetic community-structured graphs and to visualise
+  networks.
+
+This vignette introduces the basic API on simple synthetic data. The companion
+vignette, *Generating and Analyzing Brain Networks with Community Structures*,
+shows the full pipeline on community-structured populations.
+
+## Installation
+
+```r
+# Release version (once on CRAN)
+install.packages("BrainNetTest")
+
+# Development version from GitHub
+# install.packages("remotes")
+remotes::install_github("mmaximiliano/BrainNetTest")
+```
+
+## A minimal example
+
+```{r}
+library(BrainNetTest)
+set.seed(1)
+```
+
+### Generating random graphs
+
+`generate_random_graph()` returns a symmetric binary adjacency matrix with no
+self-loops:
+
+```{r}
+G <- generate_random_graph(n_nodes = 10, edge_prob = 0.2)
+isSymmetric(G)
+all(diag(G) == 0)
+```
+
+### Central graph and Manhattan distance
+
+Given a population (list of adjacency matrices), the *central graph* is the
+entry-wise mean; `compute_distance()` returns the L1 (Manhattan) distance
+between two graphs:
+
+```{r}
+population <- replicate(
+  5, generate_random_graph(n_nodes = 10, edge_prob = 0.2),
+  simplify = FALSE)
+
+central <- compute_central_graph(population)
+compute_distance(population[[1]], central)
+```
+
+### The group test statistic `T`
+
+`compute_test_statistic()` aggregates within- and between-group Manhattan
+distances into the statistic `T`. Larger values indicate stronger evidence
+that the groups differ:
+
+```{r}
+control <- replicate(
+  15, generate_random_graph(n_nodes = 10, edge_prob = 0.20),
+  simplify = FALSE)
+patient <- replicate(
+  15, generate_random_graph(n_nodes = 10, edge_prob = 0.40),
+  simplify = FALSE)
+
+populations <- list(Control = control, Patient = patient)
+compute_test_statistic(populations, a = 1)
+```
+
+### Global test and critical edges
+
+`identify_critical_links()` combines the global permutation test with an
+iterative edge-removal procedure that returns the edges driving the observed
+difference:
+
+```{r}
+result <- identify_critical_links(
+  populations,
+  alpha          = 0.05,
+  method         = "fisher",
+  n_permutations = 200,
+  seed           = 42)
+
+head(result$critical_edges)
+```
+
+The `get_critical_nodes()` helper summarises this result at the node level:
+
+```{r}
+get_critical_nodes(result)
+```
+
+## References
+
+Fraiman, D. and Fraiman, R. (2018) An ANOVA approach for statistical
+comparisons of brain networks. *Scientific Reports*, 8, 4746.
+<https://doi.org/10.1038/s41598-018-21688-0>
+
