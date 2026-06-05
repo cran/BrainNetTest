@@ -1,7 +1,7 @@
 Package: BrainNetTest
 Type: Package
 Title: Hypothesis Testing for Populations of Brain Networks
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
     person("Maximiliano", "Martino",
            email = "maxii.martino@gmail.com",
@@ -29,15 +29,15 @@ BugReports: https://github.com/mmaximiliano/BrainNetTest/issues
 Encoding: UTF-8
 Depends: R (>= 4.0.0)
 Imports: stats, graphics, igraph
-Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
+Suggests: knitr, rmarkdown, testthat (>= 3.1.7)
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2026-04-23 16:09:17 UTC; maxim
+Packaged: 2026-06-04 20:31:12 UTC; maxim
 Author: Maximiliano Martino [aut, cre] (ORCID:
     <https://orcid.org/0000-0002-2437-4387>),
   Daniel Fraiman [aut] (ORCID: <https://orcid.org/0000-0002-0482-9137>)
 Maintainer: Maximiliano Martino <maxii.martino@gmail.com>
 Repository: CRAN
-Date/Publication: 2026-04-23 16:30:02 UTC
+Date/Publication: 2026-06-05 05:20:02 UTC
