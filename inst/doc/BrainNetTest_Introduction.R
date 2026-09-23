@@ -33,6 +33,10 @@ populations <- list(Control = control, Patient = patient)
 compute_test_statistic(populations, a = 1)
 
 ## -----------------------------------------------------------------------------
+gt <- global_test(populations, n_permutations = 500, seed = 42)
+gt
+
+## -----------------------------------------------------------------------------
 result <- identify_critical_links(
   populations,
   alpha          = 0.05,
@@ -40,7 +44,10 @@ result <- identify_critical_links(
   n_permutations = 200,
   seed           = 42)
 
-head(result$critical_edges)
+result
+
+## -----------------------------------------------------------------------------
+summary(result)
 
 ## -----------------------------------------------------------------------------
 get_critical_nodes(result)

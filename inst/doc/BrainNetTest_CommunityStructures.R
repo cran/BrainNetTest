@@ -54,16 +54,15 @@ result <- identify_critical_links(
   n_permutations = 500,
   seed           = 42)
 
-nrow(result$critical_edges)
-head(result$critical_edges)
+result
 
 ## -----------------------------------------------------------------------------
 get_critical_nodes(result)
 
 ## ----eval = requireNamespace("igraph", quietly = TRUE), fig.width=7, fig.height=7----
-plot_critical_edges(
-  populations,
+plot(
   result,
+  populations,
   communities = rep(seq_len(2), each = 10),
   reference   = "Control")
 
